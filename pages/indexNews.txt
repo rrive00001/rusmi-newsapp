@@ -1,0 +1,321 @@
+import React, { Component } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+//import { Button } from "react-bootstrap";
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Card from "react-bootstrap/Card";
+import Stack from "react-bootstrap/Stack";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
+import Table from "react-bootstrap/Table";
+import { connect } from "react-redux";
+import Router from "next/router";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Carousel from "react-bootstrap/Carousel";
+import styles from "../styles/Home.module.css";
+import { updateCategory } from '../redux/action/category_action';
+import PropTypes from "prop-types";
+import Link from "next/link";
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      newsData: {},
+      mostViewedData:{},
+    };
+  }
+
+  componentDidMount() {
+    this.getNewsData();
+    this.getMostViewedData();
+  }
+
+  getNewsData = async () => {
+    const { data } = await axios.get("https://jakpost.vercel.app/api/category");
+    console.log("ini CATEGORY data JAKPOST", data);
+    this.setState({ newsData: data });
+  };
+
+  getMostViewedData = async () => {
+    const { data } = await axios.get("https://jakpost.vercel.app/api/category/most-viewed");
+    console.log("ini MOST VIEWED data  JAKPOST", data);
+    this.setState({ mostViewedData: data });
+  };
+
+  getNewsCategory(category) {
+    this.props.dispatch(updateCategory(category.category));
+    
+    this.state.data.map((category,list) => <li key={list}>{category.category}</li>);
+    console.log('GET CATEGORY', updateCategory);
+    // this.state.data.map(updateCategory(category, i){
+    //   console.log('test');
+    //   return <li key={i}>Test</li>
+    // })
+    
+    
+    //pasang route di sini
+    //Router.push(`//api/category/[category]/${category.Slug}`)
+    Router.push(`/api/category/${category.Slug}`);
+    //console.log("GET CATEGORY", category);
+  }
+
+  
+  
+
+  // getNewsCarousel(carouselheadline) {
+  //   //console.log("GET CATEGORY", category);
+  //   console.log('GET CAROUSEL', carouselheadline);
+  //   this.props.dispatch(updateCategory({
+  //       Status : carouselheadline.status,
+  //       Category : carouselheadline.category,
+  //       Link: carouselheadline.link,
+  //       Name: carouselheadline.name,
+  //       SubCategory: carouselheadline.subCategory,
+  //     })
+  //   );
+  //   //pasang route di sini
+  //   //Router.push(`//api/category/[category]/${category.Slug}`)
+  //   //Router.push(`/api/category/${category.Slug}`);
+  //   //console.log("GET CATEGORY", category);
+  // }
+
+  //buat fungsi tombol selengkapnya -> daftar kategori
+
+  //buat fungsi headline carousel ->detail berita
+
+  //buat fungsi search
+
+  render() {
+    const { newsData } = this.state
+    const { mostViewedData } = this.state
+
+
+    return (
+      <>
+        <div>
+          <style type="text/css">
+            {`
+              .carousel {
+                width:900px;
+                height:500px;
+                margin: auto;
+              }                     
+            `}
+          </style>
+
+          <Navbar bg="success" variant="dark" expand="lg">
+            <Container fluid>
+              <Navbar.Brand href="#">LOGO</Navbar.Brand>
+              <Navbar.Toggle aria-controls="navbarScroll" />
+              <Navbar.Collapse id="navbarScroll">
+                <Nav
+                  className="me-auto my-2 my-lg-0"
+                  style={{ maxHeight: "100px" }}
+                  navbarScroll
+                >
+                  <Nav.Link href="/indexNews">HOME</Nav.Link>
+                  <NavDropdown title="CATEGORY" id="navbarScrollingDropdown">
+                    <NavDropdown.Item href="#action4">
+                      Indonesia
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action3">
+                      Business
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action4">World</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action5">
+                      Selengkapnya....
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </Nav>
+
+                <Form className="d-flex">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    className="me-2"
+                    aria-label="Search"
+                  />
+                  <Button variant="outline-light">Search</Button>
+                </Form>
+              </Navbar.Collapse>
+            </Container>
+          </Navbar>
+
+          <br />
+          <h3>HEADLINE NEWS</h3>
+          <Carousel>
+            <Carousel.Item interval={1000}>
+              <img
+                className="d-block w-100"
+                src="https://img.jakpost.net/c/2022/08/11/2022_08_11_128829_1660201636._large.jpg"
+                alt="Megawati"
+              />
+              <Carousel.Caption>
+                <h3>Megawati has picked presidential candidate for 2024, says Puan</h3>
+                <p>
+                  The party chairman has arrived at the decision and we are all just waiting for the announcement.
+                </p>
+                <a href ="https://jakpost.vercel.app/api/detailpost/indonesia/2023/01/09/megawati-has-picked-presidential-candidate-for-2024-says-puan">
+                  Megawati has picked presidential candidate for 2024, says Puan
+                </a>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item interval={500}>
+              <img
+                className="d-block w-100"
+                src="https://img.jakpost.net/c/2019/04/16/2019_04_16_70126_1555384127._thumbnail.jpg"
+                alt="Second slide"
+              />
+              <Carousel.Caption>
+                <h3>Parties rally to reject PDI's proposal to adopt closed-list electoral system</h3>
+                <p>Eight out of nine political parties at the House of Representatives have expressed strong.</p>
+                <a href ="https://jakpost.vercel.app/api/detailpost/indonesia/2023/01/08/party-leaders-reject-closed-list-electoral-system">
+                  Parties rally to reject PDI's proposal to adopt closed-list electoral system
+                </a>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="https://img.jakpost.net/c/2023/01/07/2023_01_07_134228_1673068845._thumbnail.jpg"
+                alt="Third slide"
+              />
+              <Carousel.Caption>
+                <h3>Weda Bay smelter fire injures seven workers</h3>
+                <p>
+                  Police are investigating a fire that broke out on Friday at a nickel smelter
+                </p>
+                <a href ="https://jakpost.vercel.app/api/detailpost/indonesia/2023/01/07/weda-bay-smelter-fire-injures-seven-workers">
+                  Weda Bay smelter fire injures seven workers
+                </a>
+              </Carousel.Caption>
+            </Carousel.Item>
+          </Carousel>
+
+          <br />
+          <br />
+          <br /> 
+          <br />
+          <br />
+          <h3>CATEGORY</h3>
+          <br />
+
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>{newsData?.Category?.category}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newsData.category && newsData.category.map((category) => (
+                  <tr>
+                    <td>
+                      <ButtonGroup aria-label="Basic example" size="lg" className="mb-2">
+                          <Button variant="secondary">{category.name} <br/></Button>
+                      </ButtonGroup>
+                    </td>
+                    <td>
+                      <Button onClick={() => this.getNewsCategory(category)}>
+                        See Detail
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+
+          <Navbar bg="success" variant="dark" expand="lg">
+            <Container fluid>
+              <Navbar.Brand>© Copyright 2022 | Horas Wicaksono</Navbar.Brand>
+            </Container>
+          </Navbar>
+        </div>
+      </>
+    );
+  }
+}
+
+//buat connect redux ke component
+const mapStateToProps = (state) => ({
+  newsReducer: state.newsReducer,
+});
+
+export default connect(mapStateToProps)(App);
+
+
+
+
+///
+<Button variant="secondary" 
+                           onClick={() => this.getNewsCategory(category)}>
+                            {category.name} <br/>
+                          </Button>
+
+{ this.state.data.map((category,list) => <Dropdown.Item key={list}>{category.subCategory}</Dropdown.Item>)}
+                </Dropdown.Item>
+                  {subCategoryList.map(subCategoryList => <div>{category.subCategory})}
+                   {category.link} <br/>
+
+  
+  temp
+           <Container>
+            {newsData.category && newsData.category.map((category) => (
+              <ButtonGroup aria-label="Basic example" size="lg" className="mb-2">
+                <Button variant="secondary" size="xxl"
+                  onClick={() => this.getNewsList(Link)}>
+                  {category.name} <br/>
+                  {category.link} <br/>
+                </Button>
+              </ButtonGroup>
+              ))}
+              
+          </Container>
+  
+
+  // getNewsCarousel(carouselheadline) {
+  //   //console.log("GET CATEGORY", category);
+  //   console.log('GET CAROUSEL', carouselheadline);
+  //   this.props.dispatch(updateCategory({
+  //       Status : carouselheadline.status,
+  //       Category : carouselheadline.category,
+  //       Link: carouselheadline.link,
+  //       Name: carouselheadline.name,
+  //       SubCategory: carouselheadline.subCategory,
+  //     })
+  //   );
+  //   //pasang route di sini
+  //   //Router.push(`//api/category/[category]/${category.Slug}`)
+  //   //Router.push(`/api/category/${category.Slug}`);
+  //   //console.log("GET CATEGORY", category);
+  // }
+
+  //buat fungsi tombol selengkapnya -> daftar kategori
+
+  //buat fungsi headline carousel ->detail berita
+
+  //buat fungsi search
+
+  //kategori => subCategory
+  <Container>
+            {newsData.category && newsData.category.map((category) => {
+              return category.subCategory ? 
+              <DropdownButton variant="flat" size="xxl" as={ButtonGroup} 
+               title={category.name} id="bg-nested-dropdown">
+                {category.subCategory && category.subCategory.map((subCategory) =>{
+                  return (<Dropdown.Item> {subCategory.name}</Dropdown.Item>)
+                })}
+                  
+              </DropdownButton> : 
+              
+                <Button variant="flat" size="xxl">{category.name}</Button>
+              
+           })}
+          </Container>
